@@ -2,7 +2,6 @@ import { Chat } from "../models/chatModel.mjs";
 import { Messages } from "../models/messageModel.mjs";
 
 
-
 export const sendMessage = async (req, res) => {
    try {
       const {recieverId, message} = req.body
@@ -80,9 +79,15 @@ export const getAllChats = async (req, res) => {
          select: "name profilePic"
       })
 
+      chats.forEach((e) => {
+         e.users = e.users.filter((user) => user._id.toString() !== req.user._id.toString() )
+      })
+
       res.json(chats)
    } catch (error) {
       console.log(error);
       res.status(500).json({message: error.message})
    }
 }
+
+

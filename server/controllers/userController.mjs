@@ -130,3 +130,21 @@ export const updatePassword = async (req, res) => {
    }
 }
 
+export const getAllUsers = async (req, res) => {
+   try {
+      const search = req.query.search || ""
+      const users = await User.find({
+         name: {
+            $regex: search,
+            $options: "i"
+         },
+         _id: {$ne: req.user._id}
+      }).select("-password")
+
+      res.json(users)
+   } catch (error) {
+      console.log(error);
+      res.status(500).json({message: error.message})
+   }
+}
+
