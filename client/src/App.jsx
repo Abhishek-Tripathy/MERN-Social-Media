@@ -1,0 +1,33 @@
+import './App.css'
+import {Routes, Route, BrowserRouter} from 'react-router-dom'
+import Home from './pages/Home'
+import Register from './pages/Register'
+import Login from './pages/Login'
+import { UserData } from './context/UserContext'
+import Account from './pages/Account'
+import Navbar from './components/Navbar'
+import NotFound from './components/NotFound'
+import Reels from './pages/Reels'
+import { Loading } from './components/Loading'
+
+function App() {
+  const {loading, auth, user} = UserData()
+
+  return (
+    <>
+      {loading ? <Loading /> : <BrowserRouter  future={{ v7_startTransition: true , v7_relativeSplatPath: true,}}>  
+        <Routes>
+          <Route path="/" element={auth ? <Home /> : <Login />} />
+          <Route path="/reels" element={auth ? <Reels /> : <Login />} />
+          <Route path="/account" element={auth ? <Account user = {user} /> : <Login />} />
+          <Route path="/register" element={!auth ? <Register /> : <Home />} />
+          <Route path="/login" element={!auth ? <Login /> : <Home />} />
+          <Route path="/*" element={<NotFound />} />
+        </Routes>
+        {auth && <Navbar />}
+      </BrowserRouter>}
+    </>
+  )
+}
+
+export default App

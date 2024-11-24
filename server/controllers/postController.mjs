@@ -66,11 +66,19 @@ export const getAllPosts = async (req, res) => {
   try {
     const posts = await Post.find({ type: "post" })
       .sort({ createdAt: -1 })
-      .populate("owner", "-password");
+      .populate("owner", "-password")
+      .populate({
+        path: "comments.user",
+        select: "-password",
+      });
 
     const reels = await Post.find({ type: "reel" })
       .sort({ createdAt: -1 })
-      .populate("owner", "-password");
+      .populate("owner", "-password")
+      .populate({
+        path: "comments.user",
+        select: "-password",
+      });
 
     res.json({ posts, reels });
   } catch (error) {
