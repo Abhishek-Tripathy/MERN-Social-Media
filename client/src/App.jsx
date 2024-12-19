@@ -9,6 +9,7 @@ import Navbar from './components/Navbar'
 import NotFound from './components/NotFound'
 import Reels from './pages/Reels'
 import { Loading } from './components/Loading'
+import UserAccount from './pages/UserAccount'
 
 function App() {
   const {loading, auth, user} = UserData()
@@ -20,6 +21,7 @@ function App() {
           <Route path="/" element={auth ? <Home /> : <Login />} />
           <Route path="/reels" element={auth ? <Reels /> : <Login />} />
           <Route path="/account" element={auth ? <Account user = {user} /> : <Login />} />
+          <Route path="/user/:id" element={auth ? <UserAccount user = {user} /> : <Login />} />
           <Route path="/register" element={!auth ? <Register /> : <Home />} />
           <Route path="/login" element={!auth ? <Login /> : <Home />} />
           <Route path="/*" element={<NotFound />} />

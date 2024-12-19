@@ -3,15 +3,20 @@ import { BsChatFill, BsThreeDotsVertical } from 'react-icons/bs'
 import { IoHeartOutline, IoHeartSharp } from 'react-icons/io5'
 import { UserData } from '../context/UserContext'
 import { PostData } from '../context/PostContext'
-import {format} from 'date-fns'
+import {format, set} from 'date-fns'
 import {Link} from 'react-router-dom'
 import { MdDelete } from "react-icons/md";
- 
+import SimpleModal from './SimpleModal'
+import { LoadingAnimation } from './Loading'
+import toast from 'react-hot-toast'
+import axios from 'axios'
+
 function PostCard({type, value}) {
    const [isLike, setIsLike] = useState(false)
    const [show, setShow] = useState(false)
+   const [caption, setCaption] = useState(value.caption? value.caption : "")
    const {user} = UserData()
-   const {likePost, addComment} = PostData()
+   const {likePost, addComment, deletePost, loading, fetchPosts} = PostData()
    const [comment, setComment] = useState("")
    const formatDate = format(new Date(value.createdAt), "MMMM do");
 
@@ -30,9 +35,45 @@ function PostCard({type, value}) {
          if(value.likes[i] === user._id) setIsLike(true)
       }
    }, [value, user._id])
+
+   const [showModal, setShowModal]  = useState(false)
+
+   const closeModal = () => {
+      setShowModal(false)
+   }
+
+   const deleteHandler = () => {
+      deletePost(value._id)
+   }
+
+   const [showInput, setShowInput] = useState(false);
+   const editHandler = () => {
+     setShowModal(false);
+     setShowInput(true);
+   };
+
+   async function updateCaption () {
+      try {
+         const {data} = await axios.put("/api/post/" + value._id)
+
+         toast.success(data.message)
+         fetchPosts()
+      } catch (error) {
+         toast.error(error.response.data.message)
+      }
+   }
    
   return (
     <div className="bg-gray-100 flex items-center justify-center pt-3 pb-14">
+      <SimpleModal isOpen={showModal} onClose={closeModal}>
+         <div className='flex flex-col items-center justify-center gap-3'>
+            <button onClick={editHandler}
+            className="bg-blue-400 text-white py-1 px-3 rounded-md">Edit</button>
+            <button onClick={deleteHandler} disabled={loading} className="bg-red-400 text-white py-1 px-3 rounded-md">
+               {loading ? <LoadingAnimation /> : "Delete"}
+            </button>
+         </div>
+      </SimpleModal>
       <div className="bg-white p-8 rounded-lg shadow-md max-w-md" >
          <div className="flex items-center space-x-2">
             <Link to={`/user/${value.owner._id}`}>
@@ -46,12 +87,20 @@ function PostCard({type, value}) {
             </div>
             {value.owner._id===user._id && (
                <div className="text-gray-500 cursor-pointer">
-                  <button className="hover:bg-gray-50 rounded-full p-1 text-2xl"><BsThreeDotsVertical /></button>
+                  <button onClick={()=> setShowModal(true)}
+                  className="hover:bg-gray-50 rounded-full p-1 text-2xl"><BsThreeDotsVertical /></button>
                </div>
             )}
          </div>
          <div className='mb-4'>
-            <p className='text-gray-800'>{value.caption}</p>
+            {showInput? <>
+            <input value={caption} onChange={(e) => setCaption(e.target.value)} required type="text" 
+            className='custom-input w-[200px]' placeholder='Enter Caption' style={{width: "180px"}} />
+            <button onClick={updateCaption}
+            className="text-sm bg-blue-500 text-white px-1 py-1 rounded-md">Update</button>
+            <button onClick={() => setShowInput(false)} 
+            className="text-sm bg-red-500 text-white px-1 py-1 rounded-md"> X </button>
+            </> : <p className='text-gray-800'>{value.caption}</p>}
          </div>
          <div className="mb-4">
             {type==="post" ? <img src={value.post.url} className='object-cover rounded-md' /> : 

@@ -9,7 +9,6 @@ function Reels() {
   const {reels, loading} = PostData()
   const [index, setIndex] = useState(0)
 
-
   const prevReel = () => {
     if(index===0) {
       console.log("Null")

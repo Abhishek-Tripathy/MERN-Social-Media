@@ -11,7 +11,7 @@ export const UserContextProvider = ({children}) => {
    const [auth, setAuth] = useState(false)
    const [loading, setLoading] = useState(true)
 
-   async function loginUser (email, password, navigate){
+   async function loginUser (email, password, navigate, fetchPosts){
       setLoading(true)
       try {
          const {data} = await axios.post("/api/auth/login", {email, password})
@@ -21,6 +21,7 @@ export const UserContextProvider = ({children}) => {
          setUser(data.user)
          navigate("/")
          setLoading(false)
+         fetchPosts()
       } catch (error) {
          console.log(error);
          toast.error(error.response.data.message)
@@ -31,7 +32,6 @@ export const UserContextProvider = ({children}) => {
    async function fetchUser () {
       try {
          const {data} = await axios.get('/api/user/me')
-         console.log(data);
          
          setAuth(true)
          setUser(data.user)
@@ -58,7 +58,7 @@ export const UserContextProvider = ({children}) => {
       }
    }
 
-   async function registerUser (formData, navigate) {
+   async function registerUser (formData, navigate, fetchPosts) {
       setLoading(tre)
       try {
          const {data} = await axios.post("/api/auth/register", formData)
@@ -68,6 +68,7 @@ export const UserContextProvider = ({children}) => {
          setUser(data.user)
          navigate("/")
          setLoading(false)
+         fetchPosts()
       } catch (error) {
          toast.error(error.response.data.message)
          setLoading(false)

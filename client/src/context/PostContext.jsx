@@ -15,7 +15,6 @@ export const PostContextProvider = ({children}) => {
    async function fetchPosts() {
       try {
          const {data} = await axios.get("/api/post/all")
-         console.log("Fetch Posts" ,data);
          
          setPosts(data.posts)
          setReels(data.reels)
@@ -73,13 +72,28 @@ export const PostContextProvider = ({children}) => {
       }
    }
 
+   async function deletePost (id) {
+      setLoading(true)
+      try {
+         const res = await axios.delete('/api/post/' + id)
+         
+         toast.success(res.data.message)
+         fetchPosts()
+         setLoading(false)
+      } catch (error) {
+         console.error(error);      
+         toast.error(error.response.data.message);
+         setLoading(false)
+      }
+   }
+
    useEffect(() => {
       fetchPosts()
    }, [])
 
 
    return <PostContext.Provider value={{reels, posts, addPost, likePost, addComment, loading,
-      addLoading, 
+      addLoading, fetchPosts, deletePost, 
    }}>{children}</PostContext.Provider>
 }
 

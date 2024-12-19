@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { UserData } from "../context/UserContext";
+import { PostData } from "../context/PostContext.jsx";
 
 function Register() {
   const [name, setName] = useState("");
@@ -37,7 +38,7 @@ function Register() {
     formdata.append("gender", gender);
     formdata.append("file", file);
 
-    registerUser(formdata, navigate);
+    registerUser(formdata, navigate, fetchPosts);
   };
 
   return (
