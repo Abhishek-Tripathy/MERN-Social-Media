@@ -75,13 +75,51 @@ export const UserContextProvider = ({children}) => {
       }
    }
 
+   async function updateProfilePic (id, formData, setFile) {
+      try {
+         const {data} = await axios.put('/api/user/' + id, formData)
+
+         toast.success(data.message)
+         fetchUser()
+         setFile(null)
+      } catch (error) {
+         toast.error(error.response.data.message)
+         console.log(error)
+      }
+   }
+
+   async function updateProfileName (id, name, setName) {
+      try {
+         const {data} = await axios.put('/api/user/' + id, {name})
+
+         toast.success(data.message)
+         fetchUser()
+         setName("")
+      } catch (error) {
+         toast.error(error.response.data.message)
+         console.log(error)
+      }
+   }
+
+   async function updatePassword (id, oldPassword, newPassword, setShowUpdatePass) {
+      try {
+         const { data } = await axios.post("/api/user/" + id, {oldPassword, newPassword});
+   
+         data.success ? toast.success(data.message) : toast.error(data.message);
+         console.log(data.message)
+         setShowUpdatePass(false)
+       } catch (error) {
+         console.log(error)
+         toast.error(error.response.data.message);
+       }
+   }
 
    useEffect(() => {
       fetchUser()
    }, [])
 
    return   <UserContext.Provider value={{loginUser, auth, setAuth, user, setUser, loading, logoutUser,
-      registerUser, 
+      registerUser, updateProfilePic, updateProfileName, updatePassword, 
    }}>  
                {children}
                <Toaster />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { BsChatFill, BsThreeDotsVertical } from 'react-icons/bs'
 import { IoHeartOutline, IoHeartSharp } from 'react-icons/io5'
 import { UserData } from '../context/UserContext'
@@ -19,6 +19,7 @@ function PostCard({type, value}) {
    const {likePost, addComment, deletePost, loading, fetchPosts} = PostData()
    const [comment, setComment] = useState("")
    const formatDate = format(new Date(value.createdAt), "MMMM do");
+   const [captionLoading, setCaptionLoading] = useState(false)
 
    const likeHandler = () => {
       setIsLike(!isLike)
@@ -53,13 +54,18 @@ function PostCard({type, value}) {
    };
 
    async function updateCaption () {
+      setCaptionLoading(true)
       try {
-         const {data} = await axios.put("/api/post/" + value._id)
-
-         toast.success(data.message)
+         const res = await axios.put("/api/post/" + value._id, {caption})
+         console.log(res)
+         toast.success(res.data.message)
          fetchPosts()
+         setShowInput(false)
+         setCaptionLoading(false)
       } catch (error) {
+         console.log(error)
          toast.error(error.response.data.message)
+         setCaptionLoading(false)
       }
    }
    
@@ -96,8 +102,10 @@ function PostCard({type, value}) {
             {showInput? <>
             <input value={caption} onChange={(e) => setCaption(e.target.value)} required type="text" 
             className='custom-input w-[200px]' placeholder='Enter Caption' style={{width: "180px"}} />
-            <button onClick={updateCaption}
-            className="text-sm bg-blue-500 text-white px-1 py-1 rounded-md">Update</button>
+            <button onClick={updateCaption} disabled={captionLoading}
+            className="text-sm bg-blue-500 text-white px-1 py-1 rounded-md">
+               {captionLoading ? <LoadingAnimation /> : "Update"}
+            </button>
             <button onClick={() => setShowInput(false)} 
             className="text-sm bg-red-500 text-white px-1 py-1 rounded-md"> X </button>
             </> : <p className='text-gray-800'>{value.caption}</p>}
@@ -134,7 +142,7 @@ function PostCard({type, value}) {
                {
                   value.comments && value.comments.length > 0 ? 
                   value.comments.map((comment) => (
-                     <Comment key={comment._id} comment={comment} user={user} />
+                     <Comment key={comment._id} comment={comment} user={user} owner={value.owner._id} id={value._id} />
                   )) :
                   <p>No Comments</p>
                }
@@ -148,7 +156,12 @@ function PostCard({type, value}) {
 export default PostCard
 
 
-export const Comment = ({comment, user}) => {
+export const Comment = ({comment, user, owner, id}) => {
+   const {deleteComment} = PostData()
+
+   const deleteCommentHandler = () => {
+      deleteComment(id, comment._id)
+   }
    return (
       <div className="flex items-center space-x-2 mt-2">
          <Link to={`/user/${comment.user._id}`}>
@@ -159,9 +172,16 @@ export const Comment = ({comment, user}) => {
             <p className="text-gray-500 text-sm">{comment.comment}</p>
          </div>
          {
-            comment.user._id === user._id && (
-               <button className="text-red-500"><MdDelete /></button>
-            )
+            owner === user._id ? "" : <>
+               {comment.user._id === user._id && (
+               <button className="text-red-500" onClick={deleteCommentHandler} ><MdDelete /></button>
+               )}
+            </>
+         }
+         {
+            owner === user._id &&  (
+               <button className="text-red-500" onClick={deleteCommentHandler}><MdDelete /></button>
+            ) 
          }
       </div>
    )

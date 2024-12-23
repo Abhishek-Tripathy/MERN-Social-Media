@@ -87,13 +87,28 @@ export const PostContextProvider = ({children}) => {
       }
    }
 
+   async function deleteComment (id, commentId) {
+      setLoading(true)
+      try {
+         const res = await axios.delete(`/api/post/comment/${id}?commentId=${commentId}`)
+         
+         toast.success(res.data.message)
+         fetchPosts()
+         //setLoading(false)
+      } catch (error) {
+         console.error(error);      
+         toast.error(error.response.data.message);
+         //setLoading(false)
+      }
+   }
+
    useEffect(() => {
       fetchPosts()
    }, [])
 
 
    return <PostContext.Provider value={{reels, posts, addPost, likePost, addComment, loading,
-      addLoading, fetchPosts, deletePost, 
+      addLoading, fetchPosts, deletePost, deleteComment,
    }}>{children}</PostContext.Provider>
 }
 

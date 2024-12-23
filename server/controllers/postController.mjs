@@ -141,11 +141,11 @@ export const deleteComment = async (req, res) => {
 
     if (!post) return res.status(404).json({ message: "No post found" });
 
-    if (!req.body.commentId)
-      return res.status(404).json({message: "Please give comment id",});
+    if (!req.query.commentId)
+      return res.status(404).json({message: "Please give comment id"});
 
     const commentIndex = post.comments.findIndex(
-      (item) => item._id.toString() === req.body.commentId.toString()
+      (item) => item._id.toString() === req.query.commentId.toString()
     );
     
     if (commentIndex === -1) {

@@ -118,12 +118,12 @@ export const updatePassword = async (req, res) => {
 
       const compare = await bcrypt.compare(oldPassword, user.password)
 
-      if(!compare) return res.json({message: "Enter correct old Password"})
+      if(!compare) return res.json({message: "Enter correct old Password", success: false})
 
       user.password = await bcrypt.hash(newPassword, 10)
 
       await user.save()
-      res.json({message: "Password updated"})
+      res.json({message: "Password updated" , success: true})
    } catch (error) {
       console.log(error);
       res.status(500).json({message: error.message})
