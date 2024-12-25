@@ -59,9 +59,9 @@ function Account({ user }) {
   async function followData() {
     try {
       const { data } = await axios.get("/api/user/followdata/" + user._id);
-
+      
       setFollowersData(data.followers);
-      setFollowingsData(data.followings);
+      setFollowingsData(data.following);
     } catch (error) {
       console.log(error);
     }
@@ -136,10 +136,10 @@ function Account({ user }) {
                   </p>}
                   <p className="text-gray-500 text-sm">{user.email}</p>
                   <p className="text-gray-500 text-sm">{user.gender}</p>
-                  <p className="text-gray-500 text-sm">
+                  <p onClick={()=> setShow(true)} className="text-blue-500 text-sm underline cursor-pointer">
                     Followers: {user.followers.length}
                   </p>
-                  <p className="text-gray-500 text-sm">
+                  <p onClick={()=> setShow1(true)} className="text-blue-500 text-sm underline cursor-pointer">
                     Following: {user.following.length}
                   </p>
                   <button

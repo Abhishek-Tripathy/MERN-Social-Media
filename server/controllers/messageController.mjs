@@ -1,5 +1,6 @@
 import { Chat } from "../models/chatModel.mjs";
 import { Messages } from "../models/messageModel.mjs";
+import { getRecieverSocketId, io } from "../socket/socket.mjs";
 
 
 export const sendMessage = async (req, res) => {
@@ -22,9 +23,8 @@ export const sendMessage = async (req, res) => {
                sender: senderId
             }
          })
+         await chat.save()
       }
-
-      await chat.save()
 
       const newMessage = new Messages({
          chatId: chat._id,
@@ -35,9 +35,17 @@ export const sendMessage = async (req, res) => {
       await newMessage.save()
 
       await chat.updateOne({
-         latestMessage: message,
-         sender : senderId
-      })
+         latestMessage: {
+           text: message,
+           sender: senderId,
+         },
+       });
+
+       const recieverSocketId = getRecieverSocketId(recieverId)
+
+       if(recieverSocketId){
+         io.to(recieverSocketId).emit("newMessage", newMessage)
+       }
 
       res.status(201).json({newMessage})
 
@@ -73,17 +81,19 @@ export const getAllMessages = async (req, res) => {
 export const getAllChats = async (req, res) => {
    try {
       const chats = await Chat.find({
-         users: req.user._id 
-      }).populate({
+         users: req.user._id,
+       }).populate({
          path: "users",
-         select: "name profilePic"
-      })
-
-      chats.forEach((e) => {
-         e.users = e.users.filter((user) => user._id.toString() !== req.user._id.toString() )
-      })
-
-      res.json(chats)
+         select: "name profilePic",
+       });
+   
+       chats.forEach((e) => {
+         e.users = e.users.filter(
+           (user) => user._id.toString() !== req.user._id.toString()
+         );
+       });
+   
+       res.json(chats);
    } catch (error) {
       console.log(error);
       res.status(500).json({message: error.message})

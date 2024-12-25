@@ -5,6 +5,7 @@ import PostCard from "../components/PostCard";
 import { FaArrowDownLong, FaArrowUp } from "react-icons/fa6";
 import axios from "axios";
 import { Loading } from "../components/Loading";
+import Modal from "../components/Modal";
 
 function UserAccount() {
   const navigate = useNavigate();
@@ -26,9 +27,6 @@ function UserAccount() {
    }
   }
 
-  useEffect(() => {
-   fetchUser()
-  }, [])
 
   let myPosts;
 
@@ -59,12 +57,36 @@ function UserAccount() {
     setIndex(index+1)
   } 
 
+  const [show, setShow] = useState(false);
+  const [show1, setShow1] = useState(false);
+  const [followersData, setFollowersData] = useState([]);
+  const [followingsData, setFollowingsData] = useState([]);
+
+  async function followData() {
+    try {
+      const { data } = await axios.get("/api/user/followdata/" + params.id);
+      
+      setFollowersData(data.followers);
+      setFollowingsData(data.following);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    fetchUser()
+    followData()
+   }, [])
+
   return (
     <>
       {loading ? <Loading /> : <>
          {user && (
         <>
           <div className="bg-gray-100 min-h-screen flex flex-col gap-4 items-center justify-center pt-3 pb-14">
+          {show && <Modal value={followersData} title={"Followers"} setShow={setShow} />}
+          {show1 && <Modal value={followingsData} title={"Followings"} setShow={setShow1} />}
+            
             <div className="bg-white flex justify-between gap-4 p-8 rounded-lg shadow-md max-w-md">
               <div className="image flex flex-col justify-between mb-4 gap-4">
                 <img
@@ -76,8 +98,10 @@ function UserAccount() {
                 <p className="text-gray-800 font-semibold">{user.name}</p>
                 <p className="text-gray-500 text-sm">{user.email}</p>
                 <p className="text-gray-500 text-sm">{user.gender}</p>
-                <p className="text-gray-500 text-sm">{user.followers.length}</p>
-                <p className="text-gray-500 text-sm">{user.following.length}</p>
+                <p className="text-blue-500 text-sm cursor-pointer underline" 
+                onClick={()=> setShow(true)}>Followers: {user.followers.length}</p>
+                <p className="text-blue-500 text-sm cursor-pointer underline"
+                onClick={()=> setShow1(true)}>Followings: {user.following.length}</p>
               </div>
             </div>
             <div className="controls flex justify-center items-center bg-white p-4 rounded-md gap-7">
