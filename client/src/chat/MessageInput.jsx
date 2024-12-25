@@ -12,8 +12,8 @@ function MessageInput({setMessages, selectedChat}) {
       e.preventDefault();
       try {
          const {data} = await axios.post("/api/messages", {message: textMsg, recieverId: selectedChat.users[0]._id,})
-
-         setMessages((message)=> [...message, data])
+        console.log(data)
+         setMessages((prev)=> [...prev, data.newMessage])
          setTextMsg("")
          setChats((prev) => {
             const updatedChat = prev.map((chat) => {
@@ -38,16 +38,16 @@ function MessageInput({setMessages, selectedChat}) {
 
   return (
     <div>
-      <form onSubmit={handleMessage}>
+      <form onSubmit={handleMessage} >
         <input
-          type="text"
+          type="text" 
           placeholder="enter Message"
           className="border border-gray-300 rounded-lg p-2 w-[80%]"
           value={textMsg}
           onChange={(e) => setTextMsg(e.target.value)}
           required
         />
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded-lg">
+        <button type="submit" className="bg-green-500 text-white p-2 rounded-lg ml-1">
           send
         </button>
       </form>

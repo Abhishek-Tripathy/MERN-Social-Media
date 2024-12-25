@@ -18,19 +18,19 @@ function MessageContainer({selectedChat, setChats}) {
          if(selectedChat._id===message.chatId){
             setMessages((prev)=> [...prev, message])
          }
-      })
-      setChats((prev)=>{
-         const updatedChat = prev.map((chat)=>{
-            if(chat._id===messages.chatId){
-               return {...chat, latestMessage: {text: messages.text, sender: messages.sender}}
-            }
-            return chat
+         setChats((prev)=>{
+            const updatedChat = prev.map((chat)=>{
+               if(chat._id===message.chatId){
+                  return {...chat, latestMessage: {text: message.text, sender: message.sender}}
+               }
+               return chat
+            })
+            return updatedChat
          })
-         return updatedChat
       })
 
       return ()=>socket.off("newMessage")
-   },[socket])
+   },[socket, selectedChat, setChats])
 
    async function fetchMessages(){
       setLoading(true)
@@ -56,7 +56,7 @@ function MessageContainer({selectedChat, setChats}) {
          messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight
       }
     }, [messages])
-    
+   
   return (
     <div>
       {
@@ -69,8 +69,8 @@ function MessageContainer({selectedChat, setChats}) {
                {loading ? (<LoadingAnimation />) : (
                   <>
                      <div ref={messageContainerRef} className="flex flex-col gap-4 my-4 h-[400px] overflow-y-auto border border-gray-300 bg-gray-100 p-3">
-                        {messages && messages.map((e) => (
-                           <Message key={e._id} message={e.text} ownMessage={e.sender===user._id && true} />
+                        {messages && messages.map((e, i) => (
+                           <Message key={i} message={e.text} ownMessage={e.sender===user._id && true} />
                         ))}
                      </div>
                      <MessageInput setMessages={setMessages} selectedChat={selectedChat}  />

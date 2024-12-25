@@ -1,6 +1,7 @@
 import React from "react";
 
 const Message = ({ ownMessage, message }) => {
+  //console.log(`Message===> ${message} and OwnMessage===> ${ownMessage}`)
   return (
     <div className={`mb-2 ${ownMessage ? "text-right" : "text-left"}`}>
       <span

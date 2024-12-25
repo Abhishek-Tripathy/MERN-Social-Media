@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { PostData } from "../context/PostContext";
 import PostCard from "../components/PostCard";
 import { FaArrowDownLong, FaArrowUp } from "react-icons/fa6";
 import axios from "axios";
 import { Loading } from "../components/Loading";
 import Modal from "../components/Modal";
+import { UserData } from "../context/UserContext";
 
-function UserAccount() {
-  const navigate = useNavigate();
+function UserAccount({ user: loggedInUser }) {
   const { posts, reels } = PostData();
   const [type, setType] = useState("post");
   const [user, setUser] = useState({})
   const [loading, setLoading] = useState(true)
+  const [followed, setFollowed] = useState(false);
   const params = useParams()
 
   async function fetchUser () {
@@ -26,7 +27,6 @@ function UserAccount() {
       setLoading(false)
    }
   }
-
 
   let myPosts;
 
@@ -61,6 +61,20 @@ function UserAccount() {
   const [show1, setShow1] = useState(false);
   const [followersData, setFollowersData] = useState([]);
   const [followingsData, setFollowingsData] = useState([]);
+
+
+  const { followUser } = UserData();
+
+  const followHandler = () => {
+    setFollowed(!followed);
+    followUser(user._id, fetchUser);
+  };
+
+  const followers = user.followers;
+
+  useEffect(() => {
+    if (followers && followers.includes(loggedInUser._id)) setFollowed(true);
+  }, [user]);
 
   async function followData() {
     try {
@@ -102,6 +116,18 @@ function UserAccount() {
                 onClick={()=> setShow(true)}>Followers: {user.followers.length}</p>
                 <p className="text-blue-500 text-sm cursor-pointer underline"
                 onClick={()=> setShow1(true)}>Followings: {user.following.length}</p>
+
+                {user._id === loggedInUser._id ? "" : (
+                  <button
+                  onClick={followHandler}
+                  className={`py-2 px-5 text-white rounded-md ${
+                    followed ? "bg-red-500" : "bg-blue-400"
+                  }`}
+                >
+                  {followed ? "UnFollow" : "Follow"}
+                </button>
+                )}
+
               </div>
             </div>
             <div className="controls flex justify-center items-center bg-white p-4 rounded-md gap-7">
