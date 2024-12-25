@@ -11,8 +11,7 @@ const Search = () => {
     setLoading(true);
     try {
       const { data } = await axios.get("/api/user/all?search=" + search);
-
-      console.log(data)
+      
       setUsers(data);
       setLoading(false);
     } catch (error) {

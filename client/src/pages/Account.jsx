@@ -101,6 +101,7 @@ function Account({ user }) {
 
   useEffect(() => {
       followData();
+     
     }, [user]);
 
   return (
@@ -137,10 +138,10 @@ function Account({ user }) {
                   <p className="text-gray-500 text-sm">{user.email}</p>
                   <p className="text-gray-500 text-sm">{user.gender}</p>
                   <p onClick={()=> setShow(true)} className="text-blue-500 text-sm underline cursor-pointer">
-                    Followers: {user.followers.length}
+                    Followers: {followersData.length}
                   </p>
                   <p onClick={()=> setShow1(true)} className="text-blue-500 text-sm underline cursor-pointer">
-                    Following: {user.following.length}
+                    Following: {followingsData.length}
                   </p>
                   <button
                     onClick={logoutHandler}

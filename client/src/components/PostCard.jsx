@@ -10,6 +10,7 @@ import SimpleModal from './SimpleModal'
 import { LoadingAnimation } from './Loading'
 import toast from 'react-hot-toast'
 import axios from 'axios'
+import { SocketData } from '../context/SocketContext'
 
 function PostCard({type, value}) {
    const [isLike, setIsLike] = useState(false)
@@ -20,6 +21,7 @@ function PostCard({type, value}) {
    const [comment, setComment] = useState("")
    const formatDate = format(new Date(value.createdAt), "MMMM do");
    const [captionLoading, setCaptionLoading] = useState(false)
+   const {onlineUsers} = SocketData()
 
    const likeHandler = () => {
       setIsLike(!isLike)
@@ -82,22 +84,25 @@ function PostCard({type, value}) {
       </SimpleModal>
       <div className="bg-white p-8 rounded-lg shadow-md max-w-md" >
          <div className="flex items-center space-x-2">
-            <Link to={`/user/${value.owner._id}`}>
-               <img src={value.owner.profilePic.url} alt="" className="w-8 h-8 rounded-full" />
-            </Link>
-            <div>
-               <Link to={`/user/${value.owner._id}`}>
+            <Link className="flex items-center relative" to={`/user/${value.owner._id}`}>
+               <div className="relative">
+                  <img src={value.owner.profilePic.url} className="w-8 h-8 rounded-full"/>
+                  {onlineUsers.includes(value.owner._id) && (
+                  <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-400 rounded-full border-2 border-white"></div> )}
+               </div>
+               <div className="ml-2">
                   <p className="text-gray-800 font-semibold">{value.owner.name}</p>
-               </Link>
-               <div className="text-gray-500 text-sm">{formatDate}</div>
-            </div>
-            {value.owner._id===user._id && (
+                  <div className="text-gray-500 text-sm">{formatDate}</div>
+               </div>
+            </Link>
+            {value.owner._id === user._id && (
                <div className="text-gray-500 cursor-pointer">
-                  <button onClick={()=> setShowModal(true)}
+                  <button onClick={() => setShowModal(true)} 
                   className="hover:bg-gray-50 rounded-full p-1 text-2xl"><BsThreeDotsVertical /></button>
                </div>
             )}
          </div>
+
          <div className='mb-4'>
             {showInput? <>
             <input value={caption} onChange={(e) => setCaption(e.target.value)} required type="text" 
