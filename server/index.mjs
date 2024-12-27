@@ -9,7 +9,7 @@ import messagesRoutes from './routes/messageRoutes.mjs'
 import connectCloudinary from './config/cloudinary.mjs'
 import cookieParser from 'cookie-parser'
 import {server, app} from "./socket/socket.mjs"
-import path from "path"
+//import path from "path"
  
 dotenv.config()
 
@@ -17,7 +17,7 @@ const port = process.env.PORT || 8000
 
 app.use(express.json())
 app.use(cookieParser())
-// app.use(cors())
+app.use(cors())
 
 connectDb()
 connectCloudinary()
@@ -28,12 +28,6 @@ app.use('/api/auth', authRoutes)
 app.use('/api/post', postRoutes)
 app.use('/api/messages', messagesRoutes)
 
-const __dirname = path.resolve()
-app.use(express.static(path.join(__dirname, "../client/dist")))
-
-app.get("*", (req, res) => {
-   res.sendFile(path.join(__dirname, "frontend", "dist", "index.html"));
- });
 
 server.listen(port, () => {
    console.log("Listening at port", port);

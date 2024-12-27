@@ -12,7 +12,7 @@ function MessageInput({setMessages, selectedChat}) {
       e.preventDefault();
       try {
          const {data} = await axios.post("/api/messages", {message: textMsg, recieverId: selectedChat.users[0]._id,})
-        console.log(data)
+        
          setMessages((prev)=> [...prev, data.newMessage])
          setTextMsg("")
          setChats((prev) => {

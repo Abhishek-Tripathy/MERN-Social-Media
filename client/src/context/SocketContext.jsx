@@ -4,7 +4,7 @@ import { UserData } from "./UserContext";
 
 const SocketContext = createContext()
 
-const backendUrl = "http://localhost:8000"
+const backendUrl = import.meta.env.VITE_BACKEND_URL
 
 export const SocketContextProvider = ({children}) => {
 

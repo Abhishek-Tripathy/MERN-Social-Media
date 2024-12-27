@@ -12,6 +12,7 @@ import Modal from "../components/Modal.jsx";
 import axios from "axios";
 
 function Account({ user }) {
+  
   const navigate = useNavigate();
   const { logoutUser, updateProfilePic, updateProfileName, updatePassword } = UserData();
   const { posts, reels, loading } = PostData();

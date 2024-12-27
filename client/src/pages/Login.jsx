@@ -13,7 +13,6 @@ function Login() {
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
-    console.log(email, password);
     loginUser(email, password, navigate, fetchPosts);
   };
 

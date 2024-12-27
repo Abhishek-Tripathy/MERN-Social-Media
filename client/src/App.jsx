@@ -13,9 +13,10 @@ import UserAccount from './pages/UserAccount'
 import Search from './pages/Search'
 import ChatPage from './pages/ChatPage'
 
+// const backendUrl = import.meta.env.VITE_BACKEND_URL
+
 function App() {
   const {loading, auth, user} = UserData()
-  
 
   return (
     <>
