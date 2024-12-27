@@ -9,7 +9,6 @@ import messagesRoutes from './routes/messageRoutes.mjs'
 import connectCloudinary from './config/cloudinary.mjs'
 import cookieParser from 'cookie-parser'
 import {server, app} from "./socket/socket.mjs"
-//import path from "path"
  
 dotenv.config()
 
@@ -17,7 +16,12 @@ const port = process.env.PORT || 8000
 
 app.use(express.json())
 app.use(cookieParser())
-app.use(cors())
+
+const corsOptions = {
+   origin: [/\.vercel\.app$/], // Allows all subdomains of Vercel
+   credentials: true,
+ };
+app.use(cors(corsOptions))
 
 connectDb()
 connectCloudinary()
