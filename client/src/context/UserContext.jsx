@@ -11,6 +11,11 @@ export const UserContextProvider = ({children}) => {
    const [auth, setAuth] = useState(false)
    const [loading, setLoading] = useState(true)
 
+   const isTokenAvailable = () => {
+      const cookies = document.cookie;
+      return cookies.includes("token");
+    };
+
    async function loginUser (email, password, navigate, fetchPosts){
       setLoading(true)
       try {
@@ -126,7 +131,11 @@ export const UserContextProvider = ({children}) => {
     }
 
    useEffect(() => {
-      fetchUser()
+      if (isTokenAvailable()) {
+         fetchUser();
+       } else {
+         setLoading(false);
+       }
    }, [])
 
    return   <UserContext.Provider value={{loginUser, auth, setAuth, user, setUser, loading, logoutUser,

@@ -11,6 +11,10 @@ export const PostContextProvider = ({children}) => {
    const [loading, setLoading] = useState(true)
    const [addLoading, setAddLoading] = useState(false)
 
+   const isTokenAvailable = () => {
+      const cookies = document.cookie;
+      return cookies.includes("token");
+    };
 
    async function fetchPosts() {
       try {
@@ -103,7 +107,11 @@ export const PostContextProvider = ({children}) => {
    }
 
    useEffect(() => {
-      fetchPosts()
+      if (isTokenAvailable()) {
+         fetchPosts()
+       } else {
+         setLoading(false);
+       }
    }, [])
 
 
