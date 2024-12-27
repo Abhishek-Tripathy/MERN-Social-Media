@@ -1,5 +1,5 @@
 import getDataUrl from "../config/dataUriGenerator.mjs";
-import { User } from "../models/UserMOdel.mjs";
+import { User } from "../models/UserModel.mjs";
 import cloudinary from 'cloudinary'
 import bcrypt from 'bcrypt'
 
