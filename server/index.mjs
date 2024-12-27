@@ -26,6 +26,10 @@ app.use(cors(corsOptions))
 connectDb()
 connectCloudinary()
 
+app.get('/', (req, res) => {
+   res.send('Server is running!');
+});
+
 //Routes
 app.use('/api/user', userRoutes)
 app.use('/api/auth', authRoutes)
