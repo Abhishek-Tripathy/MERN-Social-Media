@@ -1,6 +1,6 @@
 import getDataUrl from "../config/dataUriGenerator.mjs"
 import generateToken from "../config/generateToken.mjs"
-import { User } from "../models/UserMOdel.mjs"
+import { User } from "../models/UserModel.mjs"
 import bcrypt from 'bcrypt'
 import cloudinary from 'cloudinary'
 
