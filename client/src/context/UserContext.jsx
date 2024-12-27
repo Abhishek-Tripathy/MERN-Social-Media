@@ -64,7 +64,7 @@ export const UserContextProvider = ({children}) => {
    }
 
    async function registerUser (formData, navigate, fetchPosts) {
-      setLoading(tre)
+      setLoading(true)
       try {
          const {data} = await axios.post("/api/auth/register", formData)
          

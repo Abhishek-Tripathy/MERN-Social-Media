@@ -10,6 +10,7 @@ function Register() {
   const [gender, setGender] = useState("");
   const [file, setFile] = useState("");
   const [filePrev, setFilePrev] = useState("");
+  const {fetchPosts} = PostData()
 
   const { registerUser, loading } = UserData();
   const navigate = useNavigate();
