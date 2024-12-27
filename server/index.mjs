@@ -18,9 +18,9 @@ app.use(express.json())
 app.use(cookieParser())
 
 const corsOptions = {
-   origin: [/\.vercel\.app$/], // Allows all subdomains of Vercel
-   credentials: true,
- };
+   origin: true, // Temporarily allow all origins
+   credentials: true, // Allow credentials (cookies/headers)
+};
 app.use(cors(corsOptions))
 
 connectDb()
