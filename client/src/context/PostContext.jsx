@@ -11,11 +11,6 @@ export const PostContextProvider = ({children}) => {
    const [loading, setLoading] = useState(true)
    const [addLoading, setAddLoading] = useState(false)
 
-   const isTokenAvailable = () => {
-      const cookies = document.cookie;
-      return cookies.includes("token");
-    };
-
    async function fetchPosts() {
       try {
          const {data} = await axios.get("/api/post/all")
@@ -107,11 +102,7 @@ export const PostContextProvider = ({children}) => {
    }
 
    useEffect(() => {
-      if (isTokenAvailable()) {
-         fetchPosts()
-       } else {
-         setLoading(false);
-       }
+      fetchPosts()
    }, [])
 
 
