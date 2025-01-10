@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { UserData } from "../context/UserContext.jsx";
 import { PostData } from "../context/PostContext.jsx";
 import { motion } from "framer-motion";
-import logo from "../assets/sample3.jpg"
+import logo from "../assets/cover.png"
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -121,14 +121,7 @@ function Login() {
               variants={containerVariants}
             >
               {/* Animated Icon */}
-              <motion.img
-                src={logo} // Replace with your actual icon path
-                alt="VibeHive Icon"
-                className="w-16 h-16 mb-4"
-                variants={logoVariants}
-                initial="hidden"
-                animate="visible"
-              />
+              
               <h1 className="text-4xl font-bold mb-4">Join VibeHive!</h1>
               <p className="text-lg mb-8 text-center">
                 Discover a community buzzing with energy and creativity. Stay
