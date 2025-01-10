@@ -58,28 +58,40 @@ function MessageContainer({selectedChat, setChats}) {
     }, [messages])
    
   return (
-    <div>
-      {
-         selectedChat && (
-            <div className="flex flex-col">
-               <div className="flex w-full h-12 items-center gap-3">
-                  <img src={selectedChat.users[0].profilePic.url} className="w-8 h-8 rounded-full" />
-                  <span>{selectedChat.users[0].name}</span>
+   <div>
+   {selectedChat && (
+      <div className="flex flex-col">
+         <div className="flex w-full h-14 items-center gap-3 px-4 py-2 bg-gradient-to-r from-blue-400 to-purple-500 rounded-t-lg shadow-md">
+            <img
+               src={selectedChat.users[0].profilePic.url}
+               className="w-10 h-10 rounded-full border-2 border-white shadow-md"
+            />
+            <span className="text-lg font-semibold text-white">{selectedChat.users[0].name}</span>
+         </div>
+         {loading ? (
+            <LoadingAnimation />
+         ) : (
+            <>
+               <div
+                  ref={messageContainerRef}
+                  className="flex flex-col gap-4 my-4 h-[400px] overflow-y-auto border border-gray-300 bg-gray-50 p-4 rounded-lg shadow-lg"
+               >
+                  {messages &&
+                     messages.map((e, i) => (
+                        <Message
+                           key={i}
+                           message={e.text}
+                           ownMessage={e.sender === user._id}
+                        />
+                     ))}
                </div>
-               {loading ? (<LoadingAnimation />) : (
-                  <>
-                     <div ref={messageContainerRef} className="flex flex-col gap-4 my-4 h-[400px] overflow-y-auto border border-gray-300 bg-gray-100 p-3">
-                        {messages && messages.map((e, i) => (
-                           <Message key={i} message={e.text} ownMessage={e.sender===user._id && true} />
-                        ))}
-                     </div>
-                     <MessageInput setMessages={setMessages} selectedChat={selectedChat}  />
-                  </>
-               )}
-            </div>
-         )
-      }
-    </div>
+               <MessageInput setMessages={setMessages} selectedChat={selectedChat} />
+            </>
+         )}
+      </div>
+   )}
+</div>
+
   )
 }
 

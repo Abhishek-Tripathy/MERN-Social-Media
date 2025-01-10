@@ -4,7 +4,7 @@ import { UserData } from "./UserContext";
 
 const SocketContext = createContext()
 
-const backendUrl = "https://mern-social-media-83gx.onrender.com"
+const backendUrl = "http://localhost:8000"
 
 export const SocketContextProvider = ({children}) => {
 

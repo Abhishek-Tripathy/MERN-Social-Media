@@ -2,19 +2,12 @@ import { createContext, useContext, useEffect, useState } from "react";
 import toast, {Toaster} from 'react-hot-toast'
 import axios from 'axios'
 
-
 const UserContext = createContext()
-
 
 export const UserContextProvider = ({children}) => {
    const [user, setUser] = useState([])
    const [auth, setAuth] = useState(false)
    const [loading, setLoading] = useState(true)
-
-   // const isTokenAvailable = () => {
-   //    const cookies = document.cookie;
-   //    return cookies.includes("token");
-   //  };
 
    async function loginUser (email, password, navigate, fetchPosts){
       setLoading(true)
@@ -131,11 +124,11 @@ export const UserContextProvider = ({children}) => {
     }
 
    useEffect(() => {
-      fetchUser()
+     fetchUser()
    }, [])
 
    return   <UserContext.Provider value={{loginUser, auth, setAuth, user, setUser, loading, logoutUser,
-      registerUser, updateProfilePic, updateProfileName, updatePassword, followUser
+      registerUser, updateProfilePic, updateProfileName, updatePassword, followUser,
    }}>  
                {children}
                <Toaster />

@@ -10,11 +10,12 @@ import { MdCancel } from "react-icons/md";
 import { Loading } from "../components/Loading";
 import Modal from "../components/Modal.jsx";
 import axios from "axios";
+import { motion } from "framer-motion";
 
 function Account({ user }) {
-  
   const navigate = useNavigate();
-  const { logoutUser, updateProfilePic, updateProfileName, updatePassword } = UserData();
+  const { logoutUser, updateProfilePic, updateProfileName, updatePassword } =
+    UserData();
   const { posts, reels, loading } = PostData();
   const [type, setType] = useState("post");
 
@@ -60,7 +61,7 @@ function Account({ user }) {
   async function followData() {
     try {
       const { data } = await axios.get("/api/user/followdata/" + user._id);
-      
+
       setFollowersData(data.followers);
       setFollowingsData(data.following);
     } catch (error) {
@@ -68,42 +69,41 @@ function Account({ user }) {
     }
   }
 
-  const [file, setFile] = useState("")
+  const [file, setFile] = useState("");
   const changeFileHandler = (e) => {
-    e.preventDefault()
-    const file = e.target.files[0]
-    setFile(file)
-  }
+    e.preventDefault();
+    const file = e.target.files[0];
+    setFile(file);
+  };
 
   const changeImageHandler = () => {
-    const formData = new FormData()
-    formData.append("file", file)
-    updateProfilePic(user._id, formData, setFile)
-  }
+    const formData = new FormData();
+    formData.append("file", file);
+    updateProfilePic(user._id, formData, setFile);
+  };
 
-  const [showInput, setShowInput] = useState(false)
-  const [name, setName] = useState(user.name ? user.name : "")
+  const [showInput, setShowInput] = useState(false);
+  const [name, setName] = useState(user.name ? user.name : "");
 
   const updateName = () => {
-    updateProfileName(user._id, name, setName)
-    setShowInput(false)
-  }
+    updateProfileName(user._id, name, setName);
+    setShowInput(false);
+  };
 
-  const [showUpdatePass, setShowUpdatePass] = useState(false)
+  const [showUpdatePass, setShowUpdatePass] = useState(false);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
   const updatePasswordHandler = (e) => {
     e.preventDefault();
-    updatePassword(user._id, oldPassword, newPassword, setShowUpdatePass)
+    updatePassword(user._id, oldPassword, newPassword, setShowUpdatePass);
     setOldPassword("");
     setNewPassword("");
-  }
+  };
 
   useEffect(() => {
-      followData();
-     
-    }, [user]);
+    followData();
+  }, [user]);
 
   return (
     <>
@@ -112,88 +112,222 @@ function Account({ user }) {
           {loading ? (
             <Loading />
           ) : (
-            <div className="bg-gray-100 min-h-screen flex flex-col gap-4 items-center justify-center pt-3 pb-14">
-              {show && <Modal value={followersData} title={"Followers"} setShow={setShow} />}
-              {show1 && <Modal value={followingsData} title={"Followings"} setShow={setShow1} />}
-              
-              <div className="bg-white flex justify-between gap-4 p-8 rounded-lg shadow-md max-w-md">
-                <div className="image flex flex-col justify-between mb-4 gap-4">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 30 }}
+              className="bg-gradient-to-b from-blue-200 via-purple-300 to-blue-100 min-h-screen flex flex-col gap-6 items-center justify-start p-6 sm:p-12"
+            >
+              {/* Modal */}
+              {show && (
+                <Modal
+                  value={followersData}
+                  title={"Followers"}
+                  setShow={setShow}
+                />
+              )}
+              {show1 && (
+                <Modal
+                  value={followingsData}
+                  title={"Followings"}
+                  setShow={setShow1}
+                />
+              )}
+
+              {/* Profile Section */}
+              <motion.div
+                initial={{ scale: 0.95 }}
+                animate={{ scale: 1 }}
+                className="bg-white w-full max-w-xl p-6 rounded-lg shadow-lg flex flex-col md:flex-row items-center gap-6"
+              >
+                {/* Profile Picture */}
+                <div className="flex flex-col items-center">
                   <img
                     src={user.profilePic.url}
-                    className="w-[180px] h-[180px] rounded-full"
+                    alt="Profile"
+                    className="w-36 h-36 rounded-full shadow-md"
                   />
-                  <div className="update w-[150px] mx-auto flex flex-col justify-center items-center">
-                    <input className="m-auto" type="file" onChange={changeFileHandler} required />
-                    <button className="bg-blue-500 rounded-lg text-white mt-2 px-3 py-2" onClick={changeImageHandler}>Update Profile</button>
+                  <div className="mt-4 flex flex-col items-center">
+                    <input
+                      type="file"
+                      className="hidden"
+                      id="fileUpload"
+                      onChange={changeFileHandler}
+                      required
+                    />
+                    <label
+                      htmlFor="fileUpload"
+                      className="bg-gradient-to-r from-blue-400 to-purple-500 text-white px-4 py-1  rounded-md cursor-pointer hover:from-blue-500 hover:to-purple-600"
+                    >
+                      Change Image
+                    </label>
+                    <button
+                      onClick={changeImageHandler}
+                      className="bg-gradient-to-r mt-2 from-blue-400 to-purple-500 text-white px-4 py-2 rounded-md cursor-pointer hover:from-blue-500 hover:to-purple-600"
+                    >
+                      Update Profile
+                    </button>
                   </div>
                 </div>
-                <div className="flex flex-col gap-2">
-                  {showInput ? <div className="flex justify-center items-center gap-2">
-                    <input value={name} onChange={e=>setName(e.target.value)} className="custom-input" style={{width: "80px"}} type="text" placeholder="Enter Name" required />
-                    <button className="bg-blue-600 text-xl rounded-md p-1 text-white" onClick={updateName}><IoCheckmarkDoneCircle /></button>
-                    <button onClick={()=>setShowInput(false)} className="bg-red-500 p-1 text-xl rounded-md text-white"><MdCancel /></button>
-                  </div> 
-                  : <p className="text-gray-800 font-semibold">{user.name}
-                    <button className="ml-3" onClick={()=>setShowInput(true)}><FaEdit /></button>
-                  </p>}
-                  <p className="text-gray-500 text-sm">{user.email}</p>
-                  <p className="text-gray-500 text-sm">{user.gender}</p>
-                  <p onClick={()=> setShow(true)} className="text-blue-500 text-sm underline cursor-pointer">
+
+                {/* Profile Details */}
+                <div className="flex-1 text-center md:text-left">
+                  {showInput ? (
+                    <div className="flex gap-2 justify-center md:justify-start">
+                      <input
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="border border-gray-300 rounded-md px-4 py-2 w-32"
+                        type="text"
+                        placeholder="Enter Name"
+                        required
+                      />
+                      <button
+                        className="bg-gradient-to-r from-green-400 to-green-500 text-white p-2 rounded-md hover:from-green-500 hover:to-green-600"
+                        onClick={updateName}
+                      >
+                        <IoCheckmarkDoneCircle />
+                      </button>
+                      <button
+                        onClick={() => setShowInput(false)}
+                        className="bg-gradient-to-r from-red-400 to-red-500 p-2 rounded-md text-white hover:from-red-500 hover:to-red-600"
+                      >
+                        <MdCancel />
+                      </button>
+                    </div>
+                  ) : (
+                    <p className="text-xl font-semibold text-gray-800">
+                      {user.name}
+                      <button
+                        onClick={() => setShowInput(true)}
+                        className="ml-3 text-blue-500 hover:text-blue-600"
+                      >
+                        <FaEdit />
+                      </button>
+                    </p>
+                  )}
+                  <p className="text-gray-600">{user.email}</p>
+                  <p className="text-gray-600">{user.gender}</p>
+
+                  <p
+                    onClick={() => setShow(true)}
+                    className="text-blue-500 underline cursor-pointer mt-2"
+                  >
                     Followers: {followersData.length}
                   </p>
-                  <p onClick={()=> setShow1(true)} className="text-blue-500 text-sm underline cursor-pointer">
+                  <p
+                    onClick={() => setShow1(true)}
+                    className="text-blue-500 underline cursor-pointer"
+                  >
                     Following: {followingsData.length}
                   </p>
+
                   <button
                     onClick={logoutHandler}
-                    className="bg-red-500 text-white rounded-lg py-1 "
+                    className="bg-gradient-to-r from-red-400 to-red-500 text-white px-4 py-2 mt-4 rounded-md hover:from-red-500 hover:to-red-600"
                   >
-                    LogOut
+                    Log Out
                   </button>
                 </div>
-              </div>
+              </motion.div>
 
-              <button className={`${showUpdatePass ? "bg-red-500" : "bg-blue-500"} px-2 py-1 rounded-md text-white`}
-              onClick={() => setShowUpdatePass(!showUpdatePass)} >{showUpdatePass ? "X" : "Update Password"}</button>
+              {/* Update Password */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                className={`${
+                  showUpdatePass
+                    ? "bg-gradient-to-r from-red-400 to-red-500"
+                    : "bg-gradient-to-r from-pink-400 via-purple-500 to-purple-600 hover:from-pink-500 hover:via-purple-600 hover:to-purple-700 text-white "
+                } text-white px-4 py-2 rounded-md hover:from-blue-500 hover:to-purple-600`}
+                onClick={() => setShowUpdatePass(!showUpdatePass)}
+              >
+                {showUpdatePass ? "X" : "Update Password"}
+              </motion.button>
 
-              {showUpdatePass && <form onSubmit={updatePasswordHandler} className="flex justify-center items-center flex-col bg-white p-2 rounded-sm gap-4">
-                <input value={oldPassword} onChange={(e)=>setOldPassword(e.target.value)} type="password" className="custom-input" placeholder="Old Password" required />
-                <input value={newPassword} onChange={(e)=>setNewPassword(e.target.value)} type="password" className="custom-input" placeholder="New Password" required />
-                <button type="submit" className="bg-blue-500 px-2 py-1 rounded-sm text-white">Update Password</button>
-              </form>}
-              
-              <div className="controls flex justify-center items-center bg-white p-4 rounded-md gap-7">
-                <button onClick={() => setType("post")}>Posts</button>
-                <button onClick={() => setType("reel")}>Reels</button>
+              {showUpdatePass && (
+                <form
+                  onSubmit={updatePasswordHandler}
+                  className="bg-white p-4 rounded-md shadow-md flex flex-col gap-4 w-full max-w-md"
+                >
+                  <input
+                    value={oldPassword}
+                    onChange={(e) => setOldPassword(e.target.value)}
+                    type="password"
+                    className="border border-gray-300 rounded-md px-4 py-2"
+                    placeholder="Old Password"
+                    required
+                  />
+                  <input
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    type="password"
+                    className="border border-gray-300 rounded-md px-4 py-2"
+                    placeholder="New Password"
+                    required
+                  />
+                  <button
+                    type="submit"
+                    className="bg-gradient-to-r from-blue-400 to-purple-500 text-white px-4 py-2 rounded-md hover:from-blue-500 hover:to-purple-600"
+                  >
+                    Update Password
+                  </button>
+                </form>
+              )}
+
+              {/* Controls */}
+              <div className="bg-white p-4 rounded-md shadow-md flex justify-center gap-6">
+                {["post", "reel"].map((item) => (
+                  <motion.button
+                    key={item}
+                    onClick={() => setType(item)}
+                    className={`${
+                      type === item
+                        ? "bg-gradient-to-r from-blue-400 to-purple-500 text-white"
+                        : "bg-gray-200"
+                    } px-4 py-2 rounded-md relative`}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {item.charAt(0).toUpperCase() + item.slice(1)}
+
+                    {/* Animated Underline */}
+                    {type === item && (
+                      <motion.div
+                        layoutId="underline"
+                        className="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-blue-600 to-purple-800 w-full"
+                      />
+                    )}
+                  </motion.button>
+                ))}
               </div>
 
               {type === "post" && (
                 <>
                   {myPosts && myPosts.length > 0 ? (
-                    myPosts.map((curr) => (
-                      <PostCard key={curr._id} type={"post"} value={curr} />
+                    myPosts.map((e) => (
+                      <PostCard type={"post"} value={e} key={e._id} />
                     ))
                   ) : (
-                    <p>No Posts Yet</p>
+                    <p>No Post Yet</p>
                   )}
                 </>
               )}
               {type === "reel" && (
                 <>
                   {myReels && myReels.length > 0 ? (
-                    <div className="flex gap-3 justify-center items-center">
+                    <div className="flex flex-col gap-3  items-center">
                       <PostCard
-                        key={myReels[index]._id}
                         type={"reel"}
                         value={myReels[index]}
+                        key={myReels[index]._id}
                       />
                       <div className="button flex flex-col justify-center items-center gap-6">
                         {index === 0 ? (
                           ""
                         ) : (
                           <button
+                            className="bg-gray-500 mb-9 text-white py-3 px-6 rounded-full flex items-center justify-center"
                             onClick={prevReel}
-                            className="bg-gray-500 text-white py-5 px-5 rounded-full"
                           >
                             <FaArrowUp />
                           </button>
@@ -202,8 +336,8 @@ function Account({ user }) {
                           ""
                         ) : (
                           <button
+                            className="bg-gray-500 mb-9 text-white py-3 px-6 rounded-full flex items-center justify-center"
                             onClick={nextReel}
-                            className="bg-gray-500 text-white py-5 px-5 rounded-full"
                           >
                             <FaArrowDownLong />
                           </button>
@@ -211,11 +345,11 @@ function Account({ user }) {
                       </div>
                     </div>
                   ) : (
-                    <p>No Posts Yet</p>
+                    <p>No Reels Yet</p>
                   )}
                 </>
               )}
-            </div>
+            </motion.div>
           )}
         </>
       )}
