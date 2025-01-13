@@ -1,4 +1,4 @@
-# MERN Social Media App
+# MERN Social Media App : VibeHive
 
 This is a full-stack social media application built using the MERN stack (MongoDB, Express, React, Node.js). The application allows users to connect, share posts, and interact with others in real-time. It includes features such as authentication, profile management, and real-time chat functionality.
 
@@ -6,7 +6,7 @@ This is a full-stack social media application built using the MERN stack (MongoD
 
 ## Deployed Link
 
-Explore the app here: [MERN E-commerce](https://mern-social-media-83gx.onrender.com)
+Explore the app here: [VibeHive](https://mern-social-media-83gx.onrender.com)
 
 ## Features
 
